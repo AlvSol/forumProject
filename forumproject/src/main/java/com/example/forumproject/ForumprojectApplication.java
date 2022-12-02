@@ -1,5 +1,6 @@
 package com.example.forumproject;
 
+import com.example.forumproject.commons.JSONparsing;
 import com.example.forumproject.model.Post;
 import com.example.forumproject.model.ThreadForum;
 import com.example.forumproject.repository.PostRepository;
@@ -36,7 +37,8 @@ public class ForumprojectApplication implements CommandLineRunner {
 		System.out.println("-------------CREATE THREADS ITEMS-------------------------------\n");
 		createThreads();
 
-
+		//JSONparsing jsoNparsing = new JSONparsing();
+		//jsoNparsing.getBannedWord();
 
 	}
 

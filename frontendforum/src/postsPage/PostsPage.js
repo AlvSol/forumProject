@@ -1,6 +1,5 @@
 import "./PostsPage.css"
 
-import React , {useState} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -59,7 +58,23 @@ import Grid from '@mui/material/Grid';
 import FolderIcon from '@mui/icons-material/Folder';
 import Divider from '@mui/material/Divider';
 
-function PostsPage(){
+import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+
+function PostsPage(props){
+
+    const { id } = useParams();
+    const [postsList, setPostsList] = useState([]);
+
+    useEffect(() => {
+        // Simple GET request using axios
+        axios.get("http://localhost:8080/thread/api/allposts/" + id)
+        .then(response=>{
+          console.log(response)
+          setPostsList(response.data);
+        })
+      },[]);
 
     const rows = [
         {
@@ -94,7 +109,7 @@ function PostsPage(){
 
     function GetIcon(postId){
         if      (postId == 0)   return <> <span class="material-symbols-outlined">question_mark </span> </>;
-        else if (postId == 1)   return <> <span class="material-symbols-outlined">volume_mute </span> </>;
+        else if (postId == 2)   return <> <span class="material-symbols-outlined">volume_mute </span> </>;
         else                    return <> <span class="material-symbols-outlined">edit </span> </>;
     }
 
@@ -131,7 +146,7 @@ function PostsPage(){
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableBody>
-                            {rows.map((row) => (
+                            {postsList.map((row) => (
                                 <tr
                                     className="PostRow"
                                     key={row.name}

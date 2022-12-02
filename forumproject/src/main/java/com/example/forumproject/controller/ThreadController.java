@@ -23,6 +23,7 @@ public class ThreadController {
     @Autowired
     PostRepository postRepository;
 
+
     @GetMapping(value="/all")
     public List<ThreadForum> getAll() {
         return threadServiceAPI.getAll();
