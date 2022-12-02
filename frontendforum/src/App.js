@@ -21,6 +21,7 @@ function App() {
       <Router>
         <Routes>
           <Route exact path='/home' element={<ThreadPage/>}/>
+          <Route exact path='/thread/:id' element={<PostsPage/>}/>
           <Route path="/*" element={<Navigate to="/home" />} />
         </Routes>
       </Router>
@@ -28,4 +29,4 @@ function App() {
   );
 }
 
-export default PostsPage;
+export default App;
