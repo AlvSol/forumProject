@@ -153,11 +153,23 @@ function PostsPage(props){
         setpostOpen(false);
     };
 
-
     const [postTitle, setPostTitle] = React.useState("");
     const [postText, setPostText]   = React.useState("");
     const [postType, setPostType]   = React.useState(0);
     const [badWordCheck, setBadWordCheck] = React.useState(true);
+
+    function ClearPostFields(){
+        setPostTitle('');
+        setPostText('');
+    }
+    function CloseAddPost(){
+        handlePostClose();
+        ClearPostFields();
+    }
+    function CloseFullAddPost(){
+        CloseAllPopUps();
+        ClearPostFields();
+    }
 
     function CheckPopUp(){
         
@@ -193,7 +205,7 @@ function PostsPage(props){
             }
           }).then(response=>{
             console.log(response)
-            CloseAllPopUps();
+            CloseFullAddPost();
           })
 
     }
@@ -295,18 +307,19 @@ function PostsPage(props){
                             value={postTitle}
                         />
                         <TextField
-                            autoFocus
-                            margin="dense"
                             id="name"
                             label="Post text"
+                            multiline
+                            rows={4}
                             fullWidth
+                            defaultValue="Default Value"
                             variant="standard"
-                            onChange={(e) => setPostText(e.target.value)}
                             value={postText}
+                            onChange={(e) => setPostText(e.target.value)}
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handlePostClose}>Cancel</Button>
+                        <Button onClick={CloseAddPost}>Cancel</Button>
                         <Button onClick={CheckPopUp} variant="contained">Upload</Button>
                     </DialogActions>
                 </Dialog>
