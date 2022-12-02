@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import PostsPage from './postsPage/PostsPage';
 
 function App() {
   return (
@@ -22,4 +23,4 @@ function App() {
   );
 }
 
-export default App;
+export default PostsPage;
