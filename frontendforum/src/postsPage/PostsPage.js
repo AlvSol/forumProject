@@ -252,15 +252,16 @@ function PostsPage(props){
             <div className="PostsContainer">
                 <div className="PostsHead">
                     <h1 className="ThreadTitle">{threadName}</h1>
-                    <FormControlLabel control={<Switch defaultChecked onClick={()=>{setRegistered(!registered)}} />} label="Registered?" />
+                    <FormControlLabel control={<Switch id="switchRegister" defaultChecked onClick={()=>{setRegistered(!registered)}} />} label="Registered?" />
                     <Button onClick={handleClickPostOpen} className="addPostButton" variant="contained">Add Post </Button>
                 </div>
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableBody>
-                            {filteredPosts.map((row) => (
+                            {filteredPosts.map((row, index) => (
                                 <tr
                                     className="PostRow"
+                                    value={index}
                                     key={row.name}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     onClick={()=>OpenRow(row)}

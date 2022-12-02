@@ -48,8 +48,8 @@ function ThreadPage() {
     return (
         <div className='threadView'>
            
-            {threadLists.map((threadItem) => (
-               <Link to={"/thread/" + threadItem.id} style={{ textDecoration: 'none' }}>
+            {threadLists.map((threadItem,index) => (
+               <Link to={"/thread/" + threadItem.id} id={index} style={{ textDecoration: 'none' }}>
                     <Paper className='threadItemList' elevation={4} align='center' onClick={() => handleClick(threadItem.id)}>
                         <p>{threadItem.name}</p>
                     </Paper>
