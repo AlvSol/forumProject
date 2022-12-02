@@ -71,22 +71,21 @@ function PostsPage(props){
     const [registered, setRegistered] = useState(true);
     const [filteredPosts, setFilteredPosts] = useState([]);
 
-    useEffect(()=>{
-        const newRows = rows.filter((row)=>{
-            if(registered )                             return true;
-            else if(!registered && row.visibility==1)   return true;
-            else                                        return false;
-        })
-        setFilteredPosts(newRows);
-    }, [registered]);
-
     useEffect(() => {
         // Simple GET request using axios
         axios.get("http://localhost:8080/thread/api/allposts/" + id)
         .then(response=>{
           console.log(response)
           setPostsList(response.data);
+
+          const newRows = postsList.filter((row)=>{
+            if(registered)                             return true;
+            else if(!registered && row.visibility==1)   return true;
+            else                                        return false;
         })
+        setFilteredPosts(newRows);
+
+        },[registered])
 
         axios.get("http://localhost:8080/thread/api/find/" + id)
         .then(response=>{
@@ -95,7 +94,7 @@ function PostsPage(props){
         },[])
 
       });
-      
+    
 
     const rows = [
         {
@@ -269,7 +268,7 @@ function PostsPage(props){
                                     <TableCell component="th" scope="row"> {
                                         GetIcon(row.type)} 
                                     </TableCell>
-                                    <TableCell align="left">{row.visibility}</TableCell>
+                                    <TableCell align="left">{row.visibility == 0 ? "Private" : "Public"}</TableCell>
                                     <TableCell align="center">
                                         <p>{row.title.substring(0, 65)}</p>
                                     </TableCell>
