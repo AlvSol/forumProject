@@ -17,3 +17,9 @@ We used a local mongodb database using mongodb compass (mongodb://localhost:2701
 
 
 For testing we used selenium + junit for a maven project in java.
+
+--------------------------
+
+Some banned words for testing:
+
+crazy, crip, caca, weirdo
