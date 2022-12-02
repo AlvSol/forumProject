@@ -1,0 +1,16 @@
+.PostsContainer{
+    margin-top: 5%;
+    margin-left: 10%;
+    margin-right: 10%;
+    width: 80%;
+}
+.PostsHead{
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 4%;
+    
+}
+.PostRow:hover{
+    background-color: rgb(220,220,220);
+    cursor: pointer;
+}

@@ -1,6 +1,7 @@
 import './App.css';
 import TitleAppBar from './TitleAppBar'
 import ThreadPage from './threadPage/ThreadPage';
+import PostsPage from './postsPage/PostsPage';
 
 import {
   BrowserRouter as Router,
@@ -9,6 +10,7 @@ import {
   Link,
   Navigate,
 } from "react-router-dom";
+
 
 
 
@@ -26,4 +28,4 @@ function App() {
   );
 }
 
-export default App;
+export default PostsPage;
