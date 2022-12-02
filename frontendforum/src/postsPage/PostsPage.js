@@ -94,8 +94,8 @@ function PostsPage(){
 
     function GetIcon(postId){
         if      (postId == 0)   return <> <span class="material-symbols-outlined">question_mark </span> </>;
-        else if (postId == 1)   return <> <span class="material-symbols-outlined">volume_mute </span> </>;
-        else                    return <> <span class="material-symbols-outlined">edit </span> </>;
+        else if (postId == 1)   return <> <span class="material-symbols-outlined">edit </span> </>;
+        else                    return <> <span class="material-symbols-outlined">volume_mute </span> </>;
     }
 
     //new post popup
@@ -106,6 +106,21 @@ function PostsPage(){
     const handlePostClose = () => {
         setPostOpen(false);
     };
+
+    //new post complete popup error
+    const [errorOpen, setErrorOpen] = React.useState(false);
+    const handleViewErrorOpen = () => {
+        setErrorOpen(true);
+    };
+    const handleViewErrorClose = () => {
+        setErrorOpen(false);
+    };
+
+    function CloseAllPopUps(){
+        handleViewClose();
+        handlePostClose();
+    }
+
     //new post visibility popup
     const [viewOpen, setviewOpen] = React.useState(false);
     const handleViewClickOpen = () => {
@@ -114,12 +129,35 @@ function PostsPage(){
     const handleViewClose = () => {
         setviewOpen(false);
     };
+    // post popup
+    const [postviewOpen, setpostOpen] = React.useState(false);
+    const handleViewPostOpen = () => {
+        setpostOpen(true);
+    };
+    const handleViewPostClose = () => {
+        setpostOpen(false);
+    };
 
-    function CloseAllPopUps(){
-        handleViewClose();
-        handlePostClose();
+
+    const [postTitle, setPostTitle] = React.useState("");
+    const [postText, setPostText]   = React.useState("");
+    const [postType, setPostType]   = React.useState();
+
+    function CheckPopUp(){
+        if(postTitle && postText)   handleViewClickOpen();
+        else                        handleViewErrorOpen();
     }
-  
+
+    
+    const [popUpPostTitle, setpopUpPostTitle]   = React.useState("");
+    const [popUpPostText, setpopUpPostText]     = React.useState("");
+
+    function OpenRow(row){
+        setpopUpPostTitle(row.title);
+        setpopUpPostText(row.text);
+        handleViewPostOpen();
+    }
+
     return(
         <>
         <body>
@@ -135,7 +173,8 @@ function PostsPage(){
                                 <tr
                                     className="PostRow"
                                     key={row.name}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}                                    
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    onClick={()=>OpenRow(row)}
                                 >
                                     <TableCell component="th" scope="row"> {
                                         GetIcon(row.type)} 
@@ -149,38 +188,53 @@ function PostsPage(){
                 </TableContainer>
             </div>
 
+            <div className="PostInfo">
+            <Dialog open={postviewOpen} onClose={handleViewPostClose}>
+                    <DialogTitle>{popUpPostTitle} </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            {popUpPostText}
+                        </DialogContentText>
+                        <Button onClick={handleViewPostClose}>close</Button>
+                    </DialogContent>
+                </Dialog>
+            </div>
+
             <div className="CreatePostPopUp">
                 <Dialog open={postOpen} onClose={handlePostClose}>
                     <DialogTitle>Create Post</DialogTitle>
                     <DialogContent>
-                    <Box
-                        noValidate
-                        component="form"
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            m: 'auto',
-                            width: 'fit-content',
-                        }}
-                    >
-                    <FormControl sx={{ mt: 2, minWidth: 120 }}>
-                        <InputLabel htmlFor="max-width">Post Type</InputLabel>
-                        <Select
-                            autoFocus
-                            // value={maxWidth}
-                            // onChange={handleMaxWidthChange}
-                            label="postType"
-                            inputProps={{
-                            name: 'Post-Type',
-                            id: 'postType',
+                        <Box
+                            noValidate
+                            component="form"
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                m: 'auto',
+                                width: 'fit-content',
                             }}
                         >
-                            <MenuItem value={0}>Doubt</MenuItem>
-                            <MenuItem value={1}>Suggestion</MenuItem>
-                            <MenuItem value={2}>Clarification</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Box>
+                            <FormControl sx={{ mt: 2, minWidth: 120 }}>
+                                <InputLabel htmlFor="max-width">Post Type</InputLabel>
+                                <Select
+                                    autoFocus
+                                    // value={maxWidth}
+                                    // onChange={handleMaxWidthChange}
+                                    label="postType"
+                                    inputProps={{
+                                        name: 'Post-Type',
+                                        id: 'postType',
+                                    }}
+                                    onChange={(e) => setPostType(e.target.value)}
+                                    value={postType}
+                                    defaultValue={0}
+                                >
+                                    <MenuItem value={0}>ThreadName + Doubt</MenuItem>
+                                    <MenuItem value={1}>ThreadName + Suggestion</MenuItem>
+                                    <MenuItem value={2}>ThreadName + Clarification</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Box>
                         <TextField
                             autoFocus
                             margin="dense"
@@ -188,6 +242,8 @@ function PostsPage(){
                             label="Post Title"
                             fullWidth
                             variant="standard"
+                            onChange={(e) => setPostTitle(e.target.value)}
+                            value={postTitle}
                         />
                         <TextField
                             autoFocus
@@ -196,11 +252,13 @@ function PostsPage(){
                             label="Post text"
                             fullWidth
                             variant="standard"
+                            onChange={(e) => setPostText(e.target.value)}
+                            value={postText}
                         />
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handlePostClose}>Cancel</Button>
-                        <Button onClick={handleViewClickOpen} variant="contained">Upload</Button>
+                        <Button onClick={CheckPopUp} variant="contained">Upload</Button>
                     </DialogActions>
                 </Dialog>
             </div>
@@ -229,6 +287,7 @@ function PostsPage(){
                             name: 'Post-Type',
                             id: 'postType',
                             }}
+                            defaultValue={0}
                         >
                             <MenuItem value={0}>Private</MenuItem>
                             <MenuItem value={1}>Public</MenuItem>
@@ -237,15 +296,22 @@ function PostsPage(){
                     </Box>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={CloseAllPopUps}>Cancel</Button>
+                        <Button onClick={handleViewClose}>Cancel</Button>
                         <Button onClick={CloseAllPopUps} variant="contained">Upload</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+            <div className="postVisibility">
+                <Dialog open={errorOpen} onClose={handleViewErrorClose}>
+                    <DialogTitle>Error! Complete captions correctly</DialogTitle>
+                    <DialogActions>
+                        <Button onClick={handleViewErrorClose} variant="contained">Go back</Button>
                     </DialogActions>
                 </Dialog>
             </div>
         </body>
         </>
-    )
-    
+    )    
 }
 
 export default PostsPage;
