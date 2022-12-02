@@ -65,6 +65,7 @@ import { useParams } from "react-router-dom";
 function PostsPage(props){
 
     const { id } = useParams();
+    const [threadName, setThreadName] = useState("");
     const [postsList, setPostsList] = useState([]);
 
     useEffect(() => {
@@ -74,7 +75,15 @@ function PostsPage(props){
           console.log(response)
           setPostsList(response.data);
         })
+
+        axios.get("http://localhost:8080/thread/api/find/" + id)
+        .then(response=>{
+          console.log(response)
+          setThreadName(response.data.name);
+        },[])
+
       });
+      
 
     const rows = [
         {
@@ -157,18 +166,21 @@ function PostsPage(props){
     const [postTitle, setPostTitle] = React.useState("");
     const [postText, setPostText]   = React.useState("");
     const [postType, setPostType]   = React.useState(0);
+    const [visibilityType, setVisibilityType] = React.useState(1);
     const [badWordCheck, setBadWordCheck] = React.useState(true);
 
     function CheckPopUp(){
         
         const alltext = postTitle + " " + postText;
+        const config = { headers: {'Content-Type': 'application/json'} };
         
         axios({
             method: 'post',
             url: "http://localhost:8080/posts/api/checkword",
             data: {
-                alltext
-            }
+                text: alltext
+            },
+            config
           }).then(response=>{
             console.log(response)
             setBadWordCheck(response.data);
@@ -189,7 +201,8 @@ function PostsPage(props){
                 title: postTitle,
                 text: postText,
                 threadId: id,
-                type: postType
+                type: postType,
+                visibility: visibilityType,
             }
           }).then(response=>{
             console.log(response)
@@ -212,7 +225,7 @@ function PostsPage(props){
         <body>
             <div className="PostsContainer">
                 <div className="PostsHead">
-                    <h1 className="ThreadTitle">Thread Title</h1>
+                    <h1 className="ThreadTitle">{threadName}</h1>
                     <Button onClick={handleClickPostOpen} className="addPostButton" variant="contained">Add Post </Button>
                 </div>
                 <TableContainer component={Paper}>
@@ -228,8 +241,10 @@ function PostsPage(props){
                                     <TableCell component="th" scope="row"> {
                                         GetIcon(row.type)} 
                                     </TableCell>
-                                    <TableCell align="center">{row.title}</TableCell>
-                                    <TableCell align="right">{row.text}</TableCell>
+                                    <TableCell align="center">
+                                        <p>{row.title.substring(0, 65)}</p>
+                                    </TableCell>
+                                    <TableCell align="right">{row.text.substring(0, 37)} ...</TableCell>
                                 </tr>
                             ))}
                         </TableBody>
@@ -278,9 +293,9 @@ function PostsPage(props){
                                     value={postType}
                                     defaultValue={0}
                                 >
-                                    <MenuItem value={0}>ThreadName + Doubt</MenuItem>
-                                    <MenuItem value={1}>ThreadName + Suggestion</MenuItem>
-                                    <MenuItem value={2}>ThreadName + Clarification</MenuItem>
+                                    <MenuItem value={0}>{threadName} + Doubt</MenuItem>
+                                    <MenuItem value={1}>{threadName} + Suggestion</MenuItem>
+                                    <MenuItem value={2}>{threadName} + Clarification</MenuItem>
                                 </Select>
                             </FormControl>
                         </Box>
@@ -336,6 +351,8 @@ function PostsPage(props){
                             name: 'Post-Type',
                             id: 'postType',
                             }}
+                            onChange={(e) => setVisibilityType(e.target.value)}
+                            value={visibilityType}
                             defaultValue={0}
                         >
                             <MenuItem value={0}>Private</MenuItem>

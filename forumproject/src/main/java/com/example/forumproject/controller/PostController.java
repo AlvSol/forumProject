@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/posts/api")
@@ -56,8 +57,13 @@ public class PostController {
     }
 
     @PostMapping(value = "/checkword")
-    public Boolean checkBannedWords(@RequestBody String text) {
-        String[] arr = text.split( "[\\s,]+" );
+    public Boolean checkBannedWords(@RequestBody Map<String, String> payload) {
+
+        String text = payload.get("text");
+
+        text = text.replaceAll("[!?,:{}]", "");
+        String[] arr = text.split("\\s+");
+
 
         for(String s: arr) {
             if(bannedList.contains(s)) {

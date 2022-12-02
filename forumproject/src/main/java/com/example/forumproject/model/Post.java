@@ -13,23 +13,27 @@ public class Post {
     private String threadId;
     private Integer type;
 
+    private Integer visibility;
+
     public Post() {
 
     }
 
-    public Post(String title, String text, String threadId, Integer type) {
+    public Post(String title, String text, String threadId, Integer type, Integer visibility) {
         this.title = title;
         this.text = text;
         this.threadId = threadId;
         this.type = type;
+        this.visibility = visibility;
     }
 
-    public Post(String id, String title, String text, String threadId, Integer type) {
+    public Post(String id, String title, String text, String threadId, Integer type, Integer visibility) {
         this.id = id;
         this.title = title;
         this.text = text;
         this.threadId = threadId;
         this.type = type;
+        this.visibility = visibility;
     }
 
     public String getId() {
@@ -70,5 +74,13 @@ public class Post {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Integer getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(Integer visibility) {
+        this.visibility = visibility;
     }
 }

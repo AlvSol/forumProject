@@ -55,10 +55,12 @@ public class ForumprojectApplication implements CommandLineRunner {
 	public void createPosts() {
 		System.out.println("Post creation started...");
 
-		postRepository.save(new Post("How do you bake an apple cake?", "I would like to bake an apple cake", "1",0));
-		postRepository.save(new Post("Techniques for baking an apple cake", "There are many techniques for baking an apple cake such as...", "1",2));
-		postRepository.save(new Post("Suggestion: open a youtube channel", "People who know many techiniques should open a youtube channel...", "1",1));
+		postRepository.save(new Post("How do you bake an apple cake?", "I would like to bake an apple cake", "1",0,1));
+		postRepository.save(new Post("Techniques for baking an apple cake", "There are many techniques for baking an apple cake such as...", "1",2,1));
+		postRepository.save(new Post("Suggestion: open a youtube channel", "People who know many techiniques should open a youtube channel...", "1",1,1));
 
+		postRepository.save(new Post("How do you break bricks with your bare hands?", "I've always wanted to break bricks with my hands", "0",0, 1));
+		postRepository.save(new Post("Suggestion: About the brick issue", "Stop watching movies!!", "0",1, 1));
 		System.out.println("Post creation ended...");
 	}
 
