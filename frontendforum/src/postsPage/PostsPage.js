@@ -68,6 +68,18 @@ function PostsPage(props){
     const [threadName, setThreadName] = useState("");
     const [postsList, setPostsList] = useState([]);
 
+    const [registered, setRegistered] = useState(true);
+    const [filteredPosts, setFilteredPosts] = useState([]);
+
+    useEffect(()=>{
+        const newRows = rows.filter((row)=>{
+            if(registered )                             return true;
+            else if(!registered && row.visibility==1)   return true;
+            else                                        return false;
+        })
+        setFilteredPosts(newRows);
+    }, [registered]);
+
     useEffect(() => {
         // Simple GET request using axios
         axios.get("http://localhost:8080/thread/api/allposts/" + id)
@@ -92,6 +104,7 @@ function PostsPage(props){
             text:'SUBTITLE',
             threadId:'',
             type:0,
+            visibility:0
         },        
         {
             id:'',
@@ -99,6 +112,7 @@ function PostsPage(props){
             text:'SUBTITLE',
             threadId:'',
             type:0,
+            visibility:1
         },        
         {
             id:'',
@@ -106,6 +120,7 @@ function PostsPage(props){
             text:'SUBTITLE',
             threadId:'',
             type:1,
+            visibility:0
         },        
         {
             id:'',
@@ -113,6 +128,7 @@ function PostsPage(props){
             text:'SUBTITLE',
             threadId:'',
             type:2,
+            visibility:1
         },
     ];
 
@@ -162,12 +178,24 @@ function PostsPage(props){
         setpostOpen(false);
     };
 
-
     const [postTitle, setPostTitle] = React.useState("");
     const [postText, setPostText]   = React.useState("");
     const [postType, setPostType]   = React.useState(0);
     const [visibilityType, setVisibilityType] = React.useState(1);
     const [badWordCheck, setBadWordCheck] = React.useState(true);
+
+    function ClearPostFields(){
+        setPostTitle('');
+        setPostText('');
+    }
+    function CloseAddPost(){
+        handlePostClose();
+        ClearPostFields();
+    }
+    function CloseFullAddPost(){
+        CloseAllPopUps();
+        ClearPostFields();
+    }
 
     function CheckPopUp(){
         
@@ -185,10 +213,9 @@ function PostsPage(props){
             console.log(response)
             setBadWordCheck(response.data);
 
-            if(postTitle && postText && response.data)   handleViewClickOpen();
-            else                        handleViewErrorOpen();
+            if(postTitle && postText && response.data)  handleViewClickOpen();
+            else                                        handleViewErrorOpen();
           })
-
     }
 
     
@@ -206,7 +233,7 @@ function PostsPage(props){
             }
           }).then(response=>{
             console.log(response)
-            CloseAllPopUps();
+            CloseFullAddPost();
           })
 
     }
@@ -226,12 +253,13 @@ function PostsPage(props){
             <div className="PostsContainer">
                 <div className="PostsHead">
                     <h1 className="ThreadTitle">{threadName}</h1>
+                    <FormControlLabel control={<Switch defaultChecked onClick={()=>{setRegistered(!registered)}} />} label="Registered?" />
                     <Button onClick={handleClickPostOpen} className="addPostButton" variant="contained">Add Post </Button>
                 </div>
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableBody>
-                            {postsList.map((row) => (
+                            {filteredPosts.map((row) => (
                                 <tr
                                     className="PostRow"
                                     key={row.name}
@@ -241,6 +269,7 @@ function PostsPage(props){
                                     <TableCell component="th" scope="row"> {
                                         GetIcon(row.type)} 
                                     </TableCell>
+                                    <TableCell align="left">{row.visibility}</TableCell>
                                     <TableCell align="center">
                                         <p>{row.title.substring(0, 65)}</p>
                                     </TableCell>
@@ -310,18 +339,19 @@ function PostsPage(props){
                             value={postTitle}
                         />
                         <TextField
-                            autoFocus
-                            margin="dense"
                             id="name"
                             label="Post text"
+                            multiline
+                            rows={4}
                             fullWidth
+                            defaultValue="Default Value"
                             variant="standard"
-                            onChange={(e) => setPostText(e.target.value)}
                             value={postText}
+                            onChange={(e) => setPostText(e.target.value)}
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handlePostClose}>Cancel</Button>
+                        <Button onClick={CloseAddPost}>Cancel</Button>
                         <Button onClick={CheckPopUp} variant="contained">Upload</Button>
                     </DialogActions>
                 </Dialog>
