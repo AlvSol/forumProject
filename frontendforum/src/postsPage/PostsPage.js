@@ -67,6 +67,18 @@ function PostsPage(props){
     const { id } = useParams();
     const [postsList, setPostsList] = useState([]);
 
+    const [registered, setRegistered] = useState(true);
+    const [filteredPosts, setFilteredPosts] = useState([]);
+
+    useEffect(()=>{
+        const newRows = rows.filter((row)=>{
+            if(registered )                             return true;
+            else if(!registered && row.visibility==1)   return true;
+            else                                        return false;
+        })
+        setFilteredPosts(newRows);
+    }, [registered]);
+
     useEffect(() => {
         // Simple GET request using axios
         axios.get("http://localhost:8080/thread/api/allposts/" + id)
@@ -83,6 +95,7 @@ function PostsPage(props){
             text:'SUBTITLE',
             threadId:'',
             type:0,
+            visibility:0
         },        
         {
             id:'',
@@ -90,6 +103,7 @@ function PostsPage(props){
             text:'SUBTITLE',
             threadId:'',
             type:0,
+            visibility:1
         },        
         {
             id:'',
@@ -97,6 +111,7 @@ function PostsPage(props){
             text:'SUBTITLE',
             threadId:'',
             type:1,
+            visibility:0
         },        
         {
             id:'',
@@ -104,6 +119,7 @@ function PostsPage(props){
             text:'SUBTITLE',
             threadId:'',
             type:2,
+            visibility:1
         },
     ];
 
@@ -185,10 +201,9 @@ function PostsPage(props){
             console.log(response)
             setBadWordCheck(response.data);
 
-            if(postTitle && postText && response.data)   handleViewClickOpen();
-            else                        handleViewErrorOpen();
+            if(postTitle && postText && response.data)  handleViewClickOpen();
+            else                                        handleViewErrorOpen();
           })
-
     }
 
     
@@ -225,12 +240,13 @@ function PostsPage(props){
             <div className="PostsContainer">
                 <div className="PostsHead">
                     <h1 className="ThreadTitle">Thread Title</h1>
+                    <FormControlLabel control={<Switch defaultChecked onClick={()=>{setRegistered(!registered)}} />} label="Registered?" />
                     <Button onClick={handleClickPostOpen} className="addPostButton" variant="contained">Add Post </Button>
                 </div>
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableBody>
-                            {postsList.map((row) => (
+                            {filteredPosts.map((row) => (
                                 <tr
                                     className="PostRow"
                                     key={row.name}
@@ -240,6 +256,7 @@ function PostsPage(props){
                                     <TableCell component="th" scope="row"> {
                                         GetIcon(row.type)} 
                                     </TableCell>
+                                    <TableCell align="left">{row.visibility}</TableCell>
                                     <TableCell align="center">{row.title}</TableCell>
                                     <TableCell align="right">{row.text}</TableCell>
                                 </tr>
