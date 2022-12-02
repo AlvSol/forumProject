@@ -38,8 +38,8 @@ public class PostController {
     }
 
     @PostMapping(value = "/save")
-    public ResponseEntity<Post> save(@RequestBody Post flight) {
-        Post obj = postServiceAPI.save(flight);
+    public ResponseEntity<Post> save(@RequestBody Post post) {
+        Post obj = postServiceAPI.save(post);
         return new ResponseEntity<Post>(obj, HttpStatus.OK);
     }
 
@@ -55,7 +55,7 @@ public class PostController {
         return new ResponseEntity<Post>(obj, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/checkword")
+    @PostMapping(value = "/checkword")
     public Boolean checkBannedWords(@RequestBody String text) {
         String[] arr = text.split( "[\\s,]+" );
 

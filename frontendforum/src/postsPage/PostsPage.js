@@ -74,7 +74,7 @@ function PostsPage(props){
           console.log(response)
           setPostsList(response.data);
         })
-      },[]);
+      });
 
     const rows = [
         {
@@ -156,14 +156,48 @@ function PostsPage(props){
 
     const [postTitle, setPostTitle] = React.useState("");
     const [postText, setPostText]   = React.useState("");
-    const [postType, setPostType]   = React.useState();
+    const [postType, setPostType]   = React.useState(0);
+    const [badWordCheck, setBadWordCheck] = React.useState(true);
 
     function CheckPopUp(){
-        if(postTitle && postText)   handleViewClickOpen();
-        else                        handleViewErrorOpen();
+        
+        const alltext = postTitle + " " + postText;
+        
+        axios({
+            method: 'post',
+            url: "http://localhost:8080/posts/api/checkword",
+            data: {
+                alltext
+            }
+          }).then(response=>{
+            console.log(response)
+            setBadWordCheck(response.data);
+
+            if(postTitle && postText && response.data)   handleViewClickOpen();
+            else                        handleViewErrorOpen();
+          })
+
     }
 
     
+    function uploadPost() {
+
+        axios({
+            method: 'post',
+            url: "http://localhost:8080/posts/api/save",
+            data: {
+                title: postTitle,
+                text: postText,
+                threadId: id,
+                type: postType
+            }
+          }).then(response=>{
+            console.log(response)
+            CloseAllPopUps();
+          })
+
+    }
+
     const [popUpPostTitle, setpopUpPostTitle]   = React.useState("");
     const [popUpPostText, setpopUpPostText]     = React.useState("");
 
@@ -312,7 +346,7 @@ function PostsPage(props){
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleViewClose}>Cancel</Button>
-                        <Button onClick={CloseAllPopUps} variant="contained">Upload</Button>
+                        <Button onClick={uploadPost} variant="contained">Upload</Button>
                     </DialogActions>
                 </Dialog>
             </div>
